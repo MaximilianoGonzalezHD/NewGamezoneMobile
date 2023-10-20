@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-header>
+    <ion-toolbar color="dark">
+      <ion-buttons slot="start">
+        <ion-menu-button color="primary" name="menu"></ion-menu-button>
+      </ion-buttons>
+      <ion-title class="centrado"> Perfil Usuario </ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content [fullscreen]="true">
+    <ion-card>
+      <ion-grid>
+        <ion-row >
+          <ion-col size="12" size-md="4">
+            <ion-col >
+              <ion-avatar >
+                <img  alt="Silhouette of a person's head" src="assets/images/fotoperfil.jpg"/>
+              </ion-avatar>
+            </ion-col>
+          </ion-col>
+          <ion-col size="12" size-md="8"></ion-col>
+        </ion-row>
+        <ion-row class="infoBasica">
+          <ion-col size="12" size-md="6">
+            <ion-list>
+              <ion-item>
+                <ion-label>Nombre de usuario: </ion-label>
+                <ion-input readonly>: {{ usuario.nombre }} </ion-input>
+              </ion-item>
+              <ion-item>
+                <ion-label>Correo </ion-label>
+                <ion-input readonly>: {{ usuario.correo }} </ion-input>
+              </ion-item>
+            </ion-list>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+    <ion-footer  class="centrado">
+      <ion-button  [routerLink]="['/cambiar-contrasena']">Cambiar contraseña</ion-button>
+      <ion-button [routerLink]="['/mod-perfil']" expand="full">Modificar Perfil</ion-button>
+    </ion-footer>
+  </ion-content>
