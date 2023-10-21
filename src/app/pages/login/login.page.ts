@@ -42,6 +42,9 @@ password: string = '';
     const email = this.email;
     const contraseña = this.password;
 
+    const id  = await this.bd.obtenerIdUsuarioPorEmail(email);
+    const rol = await this.bd.obtenerRolUsuarioPorEmail(email);
+
     if (email.trim() === '' || contraseña.trim() === '') {
       this.bd.presentAlert('Por favor, complete ambos campos.');
       return;
@@ -51,6 +54,8 @@ password: string = '';
       const isAuthenticated = await this.bd.autenticarUsuario(email, contraseña);
 
       if (isAuthenticated) {
+        this.bd.setItem('userId', id);
+        this.bd.setItem('userRole', rol);
         this.bd.presentAlert('se ha ingresado con exito!');
         this.router.navigate(['/home']);
         

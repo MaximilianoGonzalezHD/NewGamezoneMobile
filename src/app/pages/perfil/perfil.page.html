@@ -9,12 +9,12 @@
   </ion-header>
   <ion-content [fullscreen]="true">
     <ion-card>
-      <ion-grid>
-        <ion-row >
+      <ion-grid class="container">
+        <ion-row>
           <ion-col size="12" size-md="4">
-            <ion-col >
-              <ion-avatar >
-                <img  alt="Silhouette of a person's head" src="assets/images/fotoperfil.jpg"/>
+            <ion-col>
+              <ion-avatar>
+                <img alt="Silhouette of a person's head" src="assets/images/fotoperfil.jpg" />
               </ion-avatar>
             </ion-col>
           </ion-col>
@@ -23,21 +23,23 @@
         <ion-row class="infoBasica">
           <ion-col size="12" size-md="6">
             <ion-list>
-              <ion-item>
-                <ion-label>Nombre de usuario: </ion-label>
-                <ion-input readonly>: {{ usuario.nombre }} </ion-input>
+              <ion-item *ngIf="usuario_list">
+                <ion-label>Nombre de usuario:</ion-label>
+                <ion-label><span>{{ usuario_list.nombre_usuariou }}</span> </ion-label>
+
               </ion-item>
               <ion-item>
-                <ion-label>Correo </ion-label>
-                <ion-input readonly>: {{ usuario.correo }} </ion-input>
+                <ion-label>Correo: </ion-label>
+                <ion-label><span>{{ usuario_list.emailu }}</span> </ion-label>
               </ion-item>
             </ion-list>
           </ion-col>
         </ion-row>
+        <ion-button class="centrado" [routerLink]="['/cambiar-contrasena']">Cambiar contraseña</ion-button>
+        <ion-button [routerLink]="['/mod-perfil']" expand="full">Modificar Perfil</ion-button>
       </ion-grid>
     </ion-card>
-    <ion-footer  class="centrado">
-      <ion-button  [routerLink]="['/cambiar-contrasena']">Cambiar contraseña</ion-button>
-      <ion-button [routerLink]="['/mod-perfil']" expand="full">Modificar Perfil</ion-button>
-    </ion-footer>
+
   </ion-content>
+
+ 

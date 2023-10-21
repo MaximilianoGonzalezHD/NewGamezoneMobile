@@ -14,13 +14,16 @@
           <ion-icon  slot="start" name="storefront-outline"></ion-icon>
         </ion-item>
         <hr>
-        <ion-item [routerLink]="['/login']"> Login
+        <ion-item  *ngIf="hasUserRole('null')"  [routerLink]="['/login']"> Login
           <ion-icon  slot="start" name="person-outline"></ion-icon>
         </ion-item>
-        <ion-item [routerLink]="['/register']"> Registro 
+        <ion-item *ngIf="hasUserRole('null')" [routerLink]="['/register']"> Registro 
           <ion-icon  slot="start" name="person-add-outline"></ion-icon>
         </ion-item>
-        <ion-item [routerLink]="['/perfil']"> Perfil 
+        <ion-item *ngIf="hasUserRole('1')" [routerLink]="['/perfil']"> Perfil 
+          <ion-icon  slot="start" name="person-circle-outline"></ion-icon>
+        </ion-item>
+        <ion-item *ngIf="hasUserRole('2')" [routerLink]="['/perfil']"> Perfil Admin
           <ion-icon  slot="start" name="person-circle-outline"></ion-icon>
         </ion-item>
         <hr>
@@ -39,7 +42,7 @@
         </ion-item>
         <hr>
         
-        <ion-item position="bottom" [routerLink]="['/historial']"> Historial 
+        <ion-item *ngIf="hasUserRole('1')" position="bottom" [routerLink]="['/historial']"> Historial Compras
           <ion-icon  slot="start" name="receipt"></ion-icon>
         </ion-item>  
         <ion-item position="bottom" [routerLink]="['/carrito']"> Carrito 
@@ -47,13 +50,21 @@
         </ion-item>
 
         <hr>
-        <ion-item position="bottom" (click)="irUsuarios()"> Usuarios Registrados
+        <ion-item *ngIf="hasUserRole('2')"  position="bottom" (click)="irUsuarios()"> Usuarios Registrados
           <ion-icon slot="start" name="id-card-outline"></ion-icon>
         </ion-item>
 
-        <ion-item position="bottom" (click)="irVideojuegos()"> Lista de Videojuegos
+        <ion-item *ngIf="hasUserRole('2')" position="bottom" (click)="irVideojuegos()"> Lista de Videojuegos
           <ion-icon slot="start" name="list-outline"></ion-icon>
         </ion-item>
+        <hr>
+        <ion-item *ngIf="hasUserRole('1')" (click)="logout()"> Cerrar Sesión 
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        </ion-item>
+
+        <ion-item *ngIf="hasUserRole('2')" (click)="logout()"> Cerrar Sesión 
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          </ion-item>
 
       </ion-list>
     </ion-content>

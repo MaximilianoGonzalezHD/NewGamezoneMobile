@@ -38,7 +38,7 @@ export class DbservicioService {
   rol1: string = "INSERT or IGNORE INTO rol(id_rolr, nombrer) VALUES(1, 'Usuario');";
   rol2: string = "INSERT or IGNORE INTO rol(id_rolr, nombrer) VALUES(2, 'Administrador');";
   carrito_generico: string = "INSERT or IGNORE  INTO  carrito (id_carrito, usuario_id) VALUES (1, NULL)";
-  admin: string = "INSERT or IGNORE INTO usuario (emailu,nombre_usuariou,contrasenau,rol_id) VALUES('admin@admin.cl'. 'adminfirst','admin123'.2)";
+  admin: string = "INSERT or IGNORE INTO usuario (emailu,nombre_usuariou,contrasenau,rol_id) VALUES('admin@admin.cl', 'adminfirst','admin123',2)";
 
   constructor(private alertController: AlertController, private sqlite: SQLite, private platform: Platform) {
     this.createDatabase();
@@ -413,6 +413,26 @@ export class DbservicioService {
       return items;
     });
   }
+  buscarUsuarioPorId(id: any): Promise<Usuario[]> {
+    return this.database.executeSql('SELECT * FROM usuario where id_usuariou = ?', [id]).then(res => {
+      let items: Usuario[] = [];
+      if (res.rows.length > 0) {
+        for (var i = 0; i < res.rows.length; i++) {
+          items.push({
+            id_usuariou: res.rows.item(i).id_usuariou,
+            emailu: res.rows.item(i).emailu,
+            nombre_usuariou: res.rows.item(i).nombre_usuariou,
+            contrasenau: res.rows.item(i).contrasenau,
+            nombreu: res.rows.item(i).nombreu,
+            imagenu: res.rows.item(i).imagenu,
+            rol_id: res.rows.item(i).rol_id,
+          })
+        }
+      }
+      this.buscarJuego();
+      return items;
+    });
+  }
 
   
   agregarUsuario( emailu: any, nombre_usuariou: any, contrasenau: any, nombreu: any, rol_id: any){
@@ -453,16 +473,44 @@ export class DbservicioService {
     }
   }
 
-    setItem(key: string, value: string) {
+  async obtenerIdUsuarioPorEmail(email: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.database.executeSql('SELECT id_usuariou FROM usuario WHERE emailu = ?', [email])
+        .then(data => {
+          if (data.rows.length > 0) {
+            resolve(data.rows.item(0).id_usuariou.toString());
+          } else {
+            reject('Usuario no encontrado');
+          }
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+    async obtenerRolUsuarioPorEmail(email: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      this.database.executeSql('SELECT rol_id FROM usuario WHERE emailu = ?', [email])
+        .then(data => {
+          if (data.rows.length > 0) {
+            resolve(data.rows.item(0).rol_id.toString());
+          } else {
+            reject('Usuario no encontrado');
+          }
+        })
+        .catch(error => reject(error));
+    });
+  }
+
+
+
+
+  setItem(key: string, value: string) {
     localStorage.setItem(key, value);
   }
 
-  getItem(key: string): string | null {
-    return localStorage.getItem(key);
-  }
 
-  removeItem(key: string) {
-    localStorage.removeItem(key);
+  removeItem(value: string) {
+    localStorage.removeItem(value);
   }
 
   createDatabase() {
@@ -502,7 +550,7 @@ export class DbservicioService {
       await this.database.executeSql(this.rol2, []);
         //carrito generico
       await this.database.executeSql(this.carrito_generico, []);
-
+      await this.database.executeSql(this.admin, [])
 
 
 
@@ -514,7 +562,7 @@ export class DbservicioService {
       this.buscarJuegoXbox();
       this.buscarUsuario();
       this.buscarJuegoPc();
-
+  
     } catch (error) {
       this.presentAlert("Error al crear tablas" + error);
       console.error('Error al crear tablas:', error);

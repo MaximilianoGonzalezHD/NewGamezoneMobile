@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { DbservicioService } from 'src/app/services/dbservicio.service';
 
 @Component({
   selector: 'app-perfil',
@@ -6,13 +8,23 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./perfil.page.scss'],
 })
 export class PerfilPage implements OnInit {
-  usuario: any;
-  constructor() { }
+  userId: string | null;
+  usuario_list: any;
+  constructor(private bd: DbservicioService, private router: Router) {
+    this.userId = localStorage.getItem('userId');
+  }
   ngOnInit() {
-const usuarioGuardado = localStorage.getItem('usuario');
-if (usuarioGuardado) {
-  this.usuario = JSON.parse(usuarioGuardado);
-}
-
+    this.bd.dbState().subscribe(res => {
+      if (res) {
+        this.bd.buscarUsuarioPorId(this.userId)
+          .then(item => {
+            this.usuario_list = item;
+            console.log('Datos del usuario:', this.usuario_list);
+          })
+          .catch(error => {
+            console.error('Error al buscar el usuario:', error);
+          });
+      }
+    });
   }
 }
