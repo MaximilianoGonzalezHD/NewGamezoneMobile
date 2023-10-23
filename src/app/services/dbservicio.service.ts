@@ -313,6 +313,22 @@ export class DbservicioService {
       }
     });
   }
+  async obtenerJuegoPorId(id: number): Promise<any> {
+    return this.database
+      .executeSql('SELECT * FROM videojuegos WHERE id_juego = ?', [id])
+      .then((res) => {
+        if (res.rows.length > 0) {
+          return res.rows.item(0);
+        } else {
+
+          return null;
+        }
+      })
+      .catch((error) => {
+        console.error('Error al obtener el juego:', error);
+        throw error;
+      });
+  }
   //funciones carrito
   crearCarrito(usuarioId: string): Promise<number> {
     return this.database.executeSql('INSERT INTO carrito (usuario_id) VALUES (?)', [usuarioId])

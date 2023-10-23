@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DbservicioService } from 'src/app/services/dbservicio.service';
 import { Router } from '@angular/router';
+import { DetalleCompra } from '../../interfaces/Detallecompra';
 
 @Component({
   selector: 'app-historial',
@@ -8,51 +9,39 @@ import { Router } from '@angular/router';
   styleUrls: ['./historial.page.scss'],
 })
 export class HistorialPage implements OnInit {
-
   compra: any;
-  
+  totalCompra: number = 0;
   detalles: any;
   userId: string | null | number; 
-  usuario_list = [
-    {
-      id_usuariou: '',
-      emailu: '',
-      nombre_usuariou: '',
-      contrasenau: '',
-      nombreu: '',
-      imagenu: '',
-      rol_id: '',
-    }
-  ]
+
 
   constructor(private bd: DbservicioService, private router: Router) { 
     this.userId = localStorage.getItem('userId');
+    
 
   }
-
-  ngOnInit() {
-    this.iniciarCargaDatos();
-    this.bd.dbState().subscribe(async (res) => {
-      if (res) {
-        try {
-          this.usuario_list = await this.bd.buscarUsuarioPorId(this.userId);
-          console.log('Datos del usuario:', this.usuario_list);
-
-        } catch (error) {
-          console.error('Error al buscar el usuario o las compras:', error);
-        }
-      }
-    });
+  async ngOnInit() {
+    try {
+      this.compra = await this.bd.obtenerComprasPorUsuario(this.userId);
+      const id = await this.bd.obtenerIdCompra(this.userId);
+      this.detalles = await this.bd.obtenerDetallesCompraPorId(id);
+   
+      this.detalles = this.detalles.map(async (detalle: DetalleCompra) => {
+        detalle.juego = await this.bd.obtenerJuegoPorId(detalle.videojuego_id);
+        return detalle;
+      });
+      console.log(this.detalles);
+      this.totalCompra = this.detalles.reduce(
+        (total: number, detalle: DetalleCompra) => total + detalle.subtotal,
+        0
+      );
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+    }
   }
 
-  confirmarcompra() {
-    this.bd.presentAlert('Gracias por su compra!');
-    this.router.navigate(['/home']);
-  }
 
-  async iniciarCargaDatos() {
-    this.compra = await this.bd.obtenerComprasPorUsuario(this.userId);
-    const id = await this.bd.obtenerIdCompra(this.userId);
-    this.detalles = await this.bd.obtenerDetallesCompraPorId(id);
-  }
+
+
 }
+  
