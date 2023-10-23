@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 @Component({
   selector: 'app-juegos-play-station',
   templateUrl: './juegos-play-station.page.html',

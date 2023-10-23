@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 import { Router } from '@angular/router';
 
 @Component({

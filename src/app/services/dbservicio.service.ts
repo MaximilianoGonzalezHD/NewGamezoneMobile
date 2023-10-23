@@ -13,6 +13,7 @@ import { map } from 'rxjs';
 import { CarritoItem } from '../interfaces/carrito-item';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import * as emailjs from 'emailjs-com';
 
 
 
@@ -21,7 +22,7 @@ import { Router } from '@angular/router';
 })
 
 export class DbservicioService {
-
+  private emailjs: any;
   rol: string = "CREATE TABLE IF NOT EXISTS rol (id_rolr INTEGER PRIMARY KEY, nombrer VARCHAR(10));";
   usuario: string = "CREATE TABLE IF NOT EXISTS usuario (id_usuariou INTEGER PRIMARY KEY, emailu VARCHAR(30), nombre_usuariou VARCHAR(30)  NOT NULL, contrasenau VARCHAR(30) NOT NULL, nombreu VARCHAR(15), imagenu BLOB, rol_id INTEGER, FOREIGN KEY (rol_id) REFERENCES rol(id_rolr));";
   seccion: string = "CREATE TABLE IF NOT EXISTS seccion (id_seccions INTEGER PRIMARY KEY, nombres VARCHAR(30));";
@@ -42,6 +43,8 @@ export class DbservicioService {
   admin: string = "INSERT or IGNORE INTO usuario (id_usuariou,emailu,nombre_usuariou,contrasenau,rol_id) VALUES(1,'admin@admin.cl', 'adminfirst','admin123',2)";
 
   constructor(private router: Router, private alertController: AlertController, private sqlite: SQLite, private platform: Platform) {
+    this.emailjs = emailjs;
+    this.emailjs.init("service_yjq8wum");
     this.createDatabase();
   }
 
@@ -338,21 +341,18 @@ export class DbservicioService {
       });
   }
   obtenerItemsDelCarrito(carrito_id: number): Promise<any[]> {
-    return this.database.executeSql(
-      'SELECT * FROM itemCarrito WHERE carrito_id = ?',
-      [carrito_id]
-    )
-    .then((res) => {
-      const elementosCarrito = [];
-      for (let i = 0; i < res.rows.length; i++) {
-        elementosCarrito.push(res.rows.item(i));
-      }
-      return elementosCarrito;
-    })
-    .catch(error => {
-      console.error('Error al obtener los elementos del carrito:', error);
-      throw error;
-    });
+    return this.database.executeSql('SELECT * FROM itemCarrito WHERE carrito_id = ?', [carrito_id])
+      .then((res) => {
+        const elementosCarrito: any[] = []; 
+        for (let i = 0; i < res.rows.length; i++) {
+          elementosCarrito.push(res.rows.item(i));
+        }
+        return elementosCarrito;
+      })
+      .catch(error => {
+        console.error('Error al obtener los elementos del carrito:', error);
+        throw error;
+      });
   }
 
   agregarAlCarrito(videojuego_id: number, cantidad: number, carrito_id: number): Promise<void> {
@@ -470,19 +470,31 @@ crearCompra(rutc: string, usuarioId: string | number, total: number | null): Pro
       throw error;
     });
 }
-crearCompraGenerica(rutc: string, usuarioId: string | null, total: number | null): Promise<number> {
-  const fechaCompra = new Date(); 
+async crearCompraGenerica(rut: string): Promise<number> {
+  const fechaCompra = new Date();
 
-
-  return this.database.executeSql(
-    'INSERT INTO compra (fechac, rutc, totalc, usuario_id) VALUES (?, ?, ?, ?)',
-    [fechaCompra, rutc, total, usuarioId]
-  )
+  return this.database
+    .executeSql('INSERT INTO compra (fechac, rutc) VALUES (?, ?)', [fechaCompra, rut])
     .then(() => {
-      return this.obtenerIdCompra(usuarioId, fechaCompra);
+      return this.obtenerIdCompra(rut, fechaCompra);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Error al crear la compra:', error);
+      throw error;
+    });
+}
+async obtenerIdCompraGenerica(rut: string, fechaCompra: Date): Promise<number> {
+  return this.database
+    .executeSql('SELECT id_comprac FROM compra WHERE rutc = ? AND fechac = ?', [rut, fechaCompra])
+    .then((res) => {
+      if (res.rows.length > 0) {
+        return res.rows.item(0).id_comprac;
+      } else {
+        return 0; // Si no se encontró la compra, retorna 0 o algún otro valor que indique un error
+      }
+    })
+    .catch((error) => {
+      console.error('Error al obtener el ID de la compra:', error);
       throw error;
     });
 }
@@ -505,9 +517,9 @@ obtenerIdCompra(usuarioId: string | null | number, fechaCompra: Date): Promise<n
     });
 }
 async procesarCompraNoRegistrado(rut: string, correo: string) {
-  const compraId = await this.crearCompraGenerica(rut,null, null);
-  const carritoId = 1;
-  const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId); 
+  const compraId = await this.crearCompraGenerica(rut);
+  const carritoId = 1; // Puedes cambiar esto según tu lógica
+  const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId);
 
   for (const elemento of elementosCarrito) {
     await this.agregarDetalleCompra(compraId, elemento.videojuego_id, elemento.cantidad, elemento.precio);
@@ -515,9 +527,9 @@ async procesarCompraNoRegistrado(rut: string, correo: string) {
 
   await this.vaciarCarrito(carritoId);
 
-  this.enviarCorreoElectronico(correo, elementosCarrito, rut); 
-  this.router.navigate(['/home']); 
-  this.presentAlert('Gracias por su compra!');
+  this.sendEmail(correo, elementosCarrito, rut);
+  this.router.navigate(['/home']);
+  this.presentAlert('¡Gracias por su compra!');
 }
 
 async procesarCompraRegistrado(rut: string, usuarioId: number) {
@@ -753,38 +765,32 @@ agregarDetalleCompra(compraId: number, videojuegoId: number, cantidad: number, s
 
     await alert.present();
   }
-  async enviarCorreoElectronico(correo: string, elementosCarrito: any[], rut: string) {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: 'Gmail', 
-        auth: {
-          user: 'game.zone.pageshop@gmail.com', 
-          pass: 'jxcsjtcrazyazkmi', 
-        },
-      });
 
-      const mensaje = {
-        from: 'game.zone.pageshop@gmail.com', 
-        to: correo, 
-        subject: 'Detalles de tu compra', 
-        html: `
-          <p>Gracias por tu compra. Aquí están los detalles de tu compra:</p>
-          <ul>
-            ${elementosCarrito.map((elemento) => `<li>${elemento.nombre} - Cantidad: ${elemento.cantidad}</li>`).join('')}
-          </ul>
-          <p>Tu RUT: ${rut}</p>
-          <p>¡Gracias por comprar con nosotros!</p>
-        `,
-      };
+  sendEmail(correo: string, elementosCarrito: any[], rut: string) {
+    const message = `
+      Subject: Detalles de tu compra
+      To: ${correo}
+      From: game.zone.pageshop@gmail.com 
+      ...
+      (El resto de tu mensaje)
+      <p>Gracias por tu compra. Aquí están los detalles de tu compra:</p>
+      <ul>
+        ${elementosCarrito.map((elemento) => `<li>${elemento.nombre} - Cantidad: ${elemento.cantidad}</li>`).join('')}
+      </ul>
+      <p>Tu RUT: ${rut}</p>
+      <p>¡Gracias por comprar con nosotros!</p>
+    `;
 
-  
-      await transporter.sendMail(mensaje);
-
-      console.log('Correo electrónico enviado con éxito.');
-    } catch (error) {
-      console.error('Error al enviar el correo electrónico:', error);
-    }
+    this.emailjs.send("default_service", "template_id", {
+      message: message,
+    }).then(function(response: any) {
+      console.log("Correo enviado:", response);
+    }, function(error: any) {
+      console.error("Error al enviar el correo:", error);
+    });
   }
+  
+  
 
 
   ngOnInit() { }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
-
+import { DbservicioService } from '../../services/dbservicio.service';
 @Component({
   selector: 'app-juego',
   templateUrl: './juego.page.html',

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 
 @Component({
   selector: 'app-lista-usuario',

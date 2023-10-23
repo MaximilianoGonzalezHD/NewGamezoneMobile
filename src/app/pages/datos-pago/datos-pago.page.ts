@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 
 @Component({
   selector: 'app-datos-pago',
@@ -13,7 +13,9 @@ export class DatosPagoPage implements OnInit {
   constructor(private bd: DbservicioService) {} 
   ngOnInit() {
   }
-
+comprar(){
+  this.bd.procesarCompraNoRegistrado(this.rut,this.correo)
+}
 
 }
 

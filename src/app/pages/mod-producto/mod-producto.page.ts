@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { FormBuilder } from '@angular/forms';

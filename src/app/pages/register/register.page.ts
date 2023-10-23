@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { Router } from '@angular/router';
 import { AbstractControl } from '@angular/forms';
 import { DbTransaction } from '@awesome-cordova-plugins/sqlite/ngx';
-import { DbservicioService } from 'src/app/services/dbservicio.service';
+import { DbservicioService } from '../../services/dbservicio.service';
 
 @Component({
   selector: 'app-register',
