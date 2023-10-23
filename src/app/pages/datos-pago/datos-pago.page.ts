@@ -36,12 +36,27 @@ export class DatosPagoPage implements OnInit {
       this.actualizarTotalCarrito();
     });
   }
-comprar(){
-  this.bd.procesarCompraNoRegistrado(this.rut,this.correo,this.totalCarrito)
-}
-comprarconusuario(){
-  this.bd.procesarCompraRegistrado(this.rut,this.userId,this.totalCarrito);
-}
+  comprar() {
+    if (!this.userId) {
+      if (!this.validarRut(this.rut)) {
+        this.bd.presentAlert('Rut Invalido!')
+        return;
+      }
+      if (!this.validarCorreo(this.correo)) {
+        this.bd.presentAlert('Rut Correo Invalido!')
+        return;
+      }
+    }
+    this.bd.procesarCompraNoRegistrado(this.rut, this.correo, this.totalCarrito);
+  }
+  
+  comprarconusuario() {
+    if (!this.validarRut(this.rut)) {
+      this.bd.presentAlert('Rut Invalido!')
+      return;
+    }
+    this.bd.procesarCompraRegistrado(this.rut, this.userId, this.totalCarrito);
+  }
 actualizarTotalCarrito() {
   this.totalCarrito = this.carrito.reduce((total, item) => {
     total += item.cantidad * item.precio;
@@ -50,6 +65,13 @@ actualizarTotalCarrito() {
 }
 async actualizarCarrito() {
   await this.bd.actualizarCarrito(this.carritoId);
+}
+validarRut(rut: string): boolean {
+  const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}-\d{1,2}$/;
+  return rutRegex.test(rut);
+}
+validarCorreo(correo: string): boolean {
+  return correo.includes('.') && correo.includes('@');
 }
 
 hasUserRole(role: string): boolean {
