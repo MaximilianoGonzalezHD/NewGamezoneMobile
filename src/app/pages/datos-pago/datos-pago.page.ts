@@ -11,7 +11,7 @@ export class DatosPagoPage implements OnInit {
   correo: string = ''; 
   rut: string = '';   
   carritoId: number;
-  userId: string | null; 
+  userId: string | null | number; 
   totalCarrito: number = 0;
   carrito: CarritoItem[] = [];
   
@@ -37,7 +37,10 @@ export class DatosPagoPage implements OnInit {
     });
   }
 comprar(){
-  this.bd.procesarCompraNoRegistrado(this.rut,this.correo)
+  this.bd.procesarCompraNoRegistrado(this.rut,this.correo,this.totalCarrito)
+}
+comprarconusuario(){
+  this.bd.procesarCompraRegistrado(this.rut,this.userId,this.totalCarrito);
 }
 actualizarTotalCarrito() {
   this.totalCarrito = this.carrito.reduce((total, item) => {
@@ -47,6 +50,11 @@ actualizarTotalCarrito() {
 }
 async actualizarCarrito() {
   await this.bd.actualizarCarrito(this.carritoId);
+}
+
+hasUserRole(role: string): boolean {
+  const storedRole = localStorage.getItem('userRole');
+  return storedRole === role;
 }
 }
 
