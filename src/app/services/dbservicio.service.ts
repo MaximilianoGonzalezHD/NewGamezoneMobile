@@ -13,7 +13,7 @@ import { map } from 'rxjs';
 import { CarritoItem } from '../interfaces/carrito-item';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import * as nodemailer from 'nodemailer';
+
 
 
 @Injectable({
