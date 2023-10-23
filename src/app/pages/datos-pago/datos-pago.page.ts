@@ -11,5 +11,6 @@ export class DatosPagoPage implements OnInit {
 
   ngOnInit() {
   }
+  
 
 }
