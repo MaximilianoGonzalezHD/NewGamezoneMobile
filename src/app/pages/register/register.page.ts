@@ -15,10 +15,6 @@ import { DbservicioService } from 'src/app/services/dbservicio.service';
 export class RegisterPage implements OnInit {
 
   formularioRegistro: FormGroup;
-
-  customCounterFormatter(inputLength: number, maxLength: number) {
-    return `${maxLength - inputLength}`;
-  }
   
   idusuario: String = "";
   correou: String = "";
