@@ -47,7 +47,7 @@
             <div *ngIf=" formularioRegistro.get('password')?.touched && formularioRegistro.get('password')?.errors?.['required']" class="alert alert-danger">Campo vacio...</div>
             <div *ngIf=" formularioRegistro.get('password')?.touched && formularioRegistro.get('password')?.errors?.['minlength']" class="alert alert-danger">Min 5 caracteres...</div>
             <div *ngIf=" formularioRegistro.get('password')?.touched && formularioRegistro.get('password')?.errors?.['maxlength']" class="alert alert-danger">Max 30 caracteres...</div>
-            <div *ngIf=" formularioRegistro.get('password')?.touched && formularioRegistro.get('password')?.errors?.['pattern']" class="alert alert-danger">Debe poseer al menos 1 caracter especial...</div>
+            <div *ngIf=" formularioRegistro.get('password')?.touched && formularioRegistro.get('password')?.errors?.['pattern']" class="alert alert-danger">Debe poseer al menos una mayuscula...</div>
           </div>
         </ion-item>
         <ion-item>
