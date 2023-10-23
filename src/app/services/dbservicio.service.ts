@@ -525,6 +525,7 @@ async obtenerComprasPorUsuario(usuarioId: number | null | string): Promise<any[]
     const compras = [];
     for (let i = 0; i < res.rows.length; i++) {
       compras.push(res.rows.item(i));
+      
     }
     return compras;
   })
@@ -767,8 +768,7 @@ agregarDetalleCompra(compraId: number, videojuegoId: number, cantidad: number, s
         //carrito generico
       await this.database.executeSql(this.carrito_generico, []);
       await this.database.executeSql(this.admin, [])
-
-
+      
 
 
       this.isDBReady.next(true);
