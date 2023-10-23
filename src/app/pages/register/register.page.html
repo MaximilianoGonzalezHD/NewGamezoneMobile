@@ -20,8 +20,6 @@
           <ion-input type="email" class="form-control" id="correo" correo="correo" required placeholder="Ingrese Correo..." [(ngModel)]="correou" formControlName="correo"></ion-input>
           <div *ngIf=" formularioRegistro.get('correo')?.touched && formularioRegistro.get('nombre')?.errors?.['required']" class="alert alert-danger">Campo vacio</div>
         </div>
-          <div *ngif="formularioRegistro.get('correo').hasError('required') && formularioRegistro.get('correo').touched">Campo vacio</div>
-          <div *ngif="formularioRegistro.get('correo').hasError('email') && formularioRegistro.get('correo').touched">Correo invalido</div>
         <ion-item>
           <ion-label position="floating">Usuario</ion-label>
           <ion-input type="text" placeholder="Ingrese nombre..." [(ngModel)]="nombreu" formControlName="nombre"></ion-input>
