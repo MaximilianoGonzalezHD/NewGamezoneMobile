@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { PagaConfirmadoPageRoutingModule } from './paga-confirmado-routing.module';
-
+import { SharedModule } from '../../shared.module';
 import { PagaConfirmadoPage } from './paga-confirmado.page';
 
 @NgModule({
@@ -13,7 +13,8 @@ import { PagaConfirmadoPage } from './paga-confirmado.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    PagaConfirmadoPageRoutingModule
+    PagaConfirmadoPageRoutingModule,
+    SharedModule
   ],
   declarations: [PagaConfirmadoPage]
 })

@@ -454,7 +454,7 @@ export class DbservicioService {
   }
 
   //funciones del proceso de compra
-crearCompra(rutc: string, usuarioId: string | number, total: number | null): Promise<number> {
+crearCompra(rutc: string, usuarioId: string | number | null, total: number ): Promise<number> {
   const fechaCompra = new Date(); 
 
 
@@ -463,20 +463,20 @@ crearCompra(rutc: string, usuarioId: string | number, total: number | null): Pro
     [fechaCompra, rutc, total, usuarioId]
   )
     .then(() => {
-      return this.obtenerIdCompra(usuarioId, fechaCompra);
+      return this.obtenerIdCompra(usuarioId);
     })
     .catch(error => {
       console.error('Error al crear la compra:', error);
       throw error;
     });
 }
-async crearCompraGenerica(rut: string): Promise<number> {
+async crearCompraGenerica(rut: string, total: any): Promise<number> {
   const fechaCompra = new Date();
 
   return this.database
-    .executeSql('INSERT INTO compra (fechac, rutc) VALUES (?, ?)', [fechaCompra, rut])
+    .executeSql('INSERT INTO compra (fechac, rutc, totalc) VALUES (?, ?, ?)', [fechaCompra, rut ,total])
     .then(() => {
-      return this.obtenerIdCompra(rut, fechaCompra);
+      return this.obtenerIdCompra(rut);
     })
     .catch((error) => {
       console.error('Error al crear la compra:', error);
@@ -499,10 +499,10 @@ async obtenerIdCompraGenerica(rut: string, fechaCompra: Date): Promise<number> {
     });
 }
 
-obtenerIdCompra(usuarioId: string | null | number, fechaCompra: Date): Promise<number> {
+obtenerIdCompra(usuarioId: string | null | number): Promise<number> {
   return this.database.executeSql(
     'SELECT id_comprac FROM compra WHERE usuario_id = ? AND fechac = ?',
-    [usuarioId, fechaCompra]
+    [usuarioId]
   )
     .then((res) => {
       if (res.rows.length > 0) {
@@ -516,8 +516,43 @@ obtenerIdCompra(usuarioId: string | null | number, fechaCompra: Date): Promise<n
       throw error;
     });
 }
-async procesarCompraNoRegistrado(rut: string, correo: string) {
-  const compraId = await this.crearCompraGenerica(rut);
+async obtenerComprasPorUsuario(usuarioId: number | null | string): Promise<any[]> {
+  return this.database.executeSql(
+    'SELECT * FROM compra WHERE usuario_id = ?',
+    [usuarioId]
+  )
+  .then((res) => {
+    const compras = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      compras.push(res.rows.item(i));
+    }
+    return compras;
+  })
+  .catch(error => {
+    console.error('Error al obtener las compras por usuario:', error);
+    throw error;
+  });
+}
+async obtenerDetallesCompraPorId(compraId: number): Promise<any[]> {
+  return this.database.executeSql(
+    'SELECT * FROM detallesc WHERE compra_id = ?',
+    [compraId]
+  )
+  .then((res) => {
+    const detallesCompra = [];
+    for (let i = 0; i < res.rows.length; i++) {
+      detallesCompra.push(res.rows.item(i));
+    }
+    return detallesCompra;
+  })
+  .catch(error => {
+    console.error('Error al obtener los detalles de compra por ID de compra:', error);
+    throw error;
+  });
+}
+
+async procesarCompraNoRegistrado(rut: string, correo: string, total: any) {
+  const compraId = await this.crearCompraGenerica(rut,total);
   const carritoId = 1; // Puedes cambiar esto según tu lógica
   const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId);
 
@@ -532,8 +567,8 @@ async procesarCompraNoRegistrado(rut: string, correo: string) {
   this.presentAlert('¡Gracias por su compra!');
 }
 
-async procesarCompraRegistrado(rut: string, usuarioId: number) {
-  const compraId = await this.crearCompra(rut, usuarioId, null);
+async procesarCompraRegistrado(rut: string, usuarioId: string | null | number, total: any) {
+  const compraId = await this.crearCompra(rut, usuarioId, total);
   const carritoId = await this.obtenerIdCarritoDeUsuario(usuarioId);
   const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId);
 

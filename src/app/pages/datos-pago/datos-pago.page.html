@@ -23,14 +23,16 @@
           <ion-label position="floating">Rut:</ion-label>
           <ion-input placeholder="Ingrese su Rut..." [(ngModel)]="rut"></ion-input>
         </ion-item>
-        <ion-item>
+        <ion-item *ngIf="hasUserRole('null')">
           <ion-label position="floating">Correo:</ion-label>
           <ion-input placeholder="Ingrese su Correo..." [(ngModel)]="correo"></ion-input>
         </ion-item>
         <ion-item>
           <ion-label class="centrado">Total: {{ totalCarrito | precioClp }} </ion-label>
         </ion-item>
-        <ion-button (click)="comprar()">Confirmar</ion-button>
+        <ion-button *ngIf="hasUserRole('null')" (click)="comprar()">Confirmar</ion-button>
+        <ion-button *ngIf="hasUserRole('1')" (click)="comprarconusuario()">Confirmar</ion-button>
+        <ion-button *ngIf="hasUserRole('2')" (click)="comprarconusuario()">Confirmar</ion-button>
       </ion-card-content>
     </ion-card>
   </ion-grid>

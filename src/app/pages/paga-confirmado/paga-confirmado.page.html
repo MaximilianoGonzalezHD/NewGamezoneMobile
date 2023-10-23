@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header>
   <ion-toolbar color="dark">
     <ion-buttons slot="start">
       <ion-menu-button color="primary" name="menu"></ion-menu-button>
@@ -7,40 +7,36 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content >
-  <ion-grid class="container">
-    <ion-row>
-      <ion-col>
-        <h1 class="neon-rgb">Gracias por su compra!!</h1>
-      </ion-col>
-    </ion-row>
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title class="neon-rgb">Datos</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <ion-item>
-        <ion-label>Rut:</ion-label>
-        <p>x.xxx.xxx-x</p>
-      </ion-item>
+<ion-content [fullscreen]="true">
+  <ion-card class="centrado perfil-usuario margin-top ">
+    <ion-card-header>
+      <ion-card-title class="neon-rgb">Detalles de la Compra</ion-card-title>
+    </ion-card-header>
+    <ion-list class="infoBasica">
       <ion-item>
+        <ion-label>Fecha:</ion-label>
+        <p>{{ compra[0].fechac }}</p>
+      </ion-item>
+      <ion-item *ngIf="usuario_list">
         <ion-label>Usuario:</ion-label>
-        <span>tugatita777</span>
+        <ion-label>{{ usuario_list[0].nombre_usuariou }}</ion-label>
       </ion-item>
       <ion-item>
-        <ion-label>Correo:</ion-label>
-        <span>tugatita777@duocuc.cl</span>
+        <ion-label>RUT:</ion-label>
+        <p>{{ compra[0].rutc }}</p>
       </ion-item>
       <ion-item>
-        <ion-label class="centrado">Total:</ion-label>
-    </ion-item>
-    <ion-item>
-      <ion-label class="centrado">5 peso</ion-label>
-    </ion-item>
-    <ion-button [routerLink]="['/home']">Volver</ion-button>
-      </ion-card-content>
-    </ion-card>
-  </ion-grid>
-  
+        <ion-label>Correo: </ion-label>
+        <ion-label>{{ usuario_list[0].emailu }}</ion-label>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Total:</ion-label>
+        <p>{{ compra[0].totalc | precioClp }}</p>
+      </ion-item>
+      <ion-item>
+        <ion-button class="centrado" (click)="confirmarcompra()">Confirmar</ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>
-  
