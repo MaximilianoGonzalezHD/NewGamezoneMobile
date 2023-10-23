@@ -14,14 +14,14 @@ import { DbservicioService } from '../../services/dbservicio.service';
 
 export class RegisterPage implements OnInit {
 
-  formularioRegistro: FormGroup;
+  formularioRegistro: FormGroup 
   
-  idusuario: String = "";
-  correou: String = "";
-  nombreu: String = "";
-  contrau: String = "";
-  nombreuop: String = "";
-  rol: String = "1";
+  idusuario: any = "";
+  correou: any = "";
+  nombreu: any = "";
+  contrau: any = "";
+  nombreuop: any = "";
+  rol: any = "1";
   
 
   constructor(
