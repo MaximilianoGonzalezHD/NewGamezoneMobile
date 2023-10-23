@@ -56,6 +56,7 @@ password: string = '';
       if (isAuthenticated) {
         this.bd.setItem('userId', id);
         this.bd.setItem('userRole', rol);
+        this.bd.crearCarrito(id);
         this.bd.presentAlert('se ha ingresado con exito!');
         this.router.navigate(['/home']);
         

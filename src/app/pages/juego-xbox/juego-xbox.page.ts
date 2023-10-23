@@ -8,9 +8,15 @@ import { DbservicioService } from 'src/app/services/dbservicio.service';
   styleUrls: ['./juego-xbox.page.scss'],
 })
 export class JuegoXboxPage implements OnInit {
-
-  constructor(private bd: DbservicioService, private router: Router, private route: ActivatedRoute) { }
   videojuego: any;
+  userId: string | null;
+  carrito: any[];
+
+  constructor(private bd: DbservicioService, private router: Router, private route: ActivatedRoute) {
+    this.userId = localStorage.getItem('userId');
+    this.carrito = [];
+   }
+
   ngOnInit() {
     this.route.paramMap.subscribe((paramMap) => {
       const slug = paramMap.get('slug');
@@ -24,6 +30,45 @@ export class JuegoXboxPage implements OnInit {
         });
       }
     });
+
+
+
+  }
+
+
+  agregarAlCarrito(videojuego_id: number) {
+    this.bd.obtenerIdCarritoDeUsuario(this.userId)
+      .then((carritoId) => {
+        this.bd.obtenerItemCarrito(carritoId, videojuego_id)
+          .then((itemCarrito) => {
+            if (itemCarrito) {
+              const nuevaCantidad = itemCarrito.cantidad + 1;
+              this.bd.actualizarCantidadEnCarrito(videojuego_id, nuevaCantidad, carritoId)
+                .then(() => {
+                  this.bd.presentAlert("Se ha aumentado la cantidad en su carrito");
+                  this.router.navigate(['/carrito']);
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            } else {
+              this.bd.agregarAlCarrito(videojuego_id, 1, carritoId)
+                .then(() => {
+                  this.bd.presentAlert("Se ha agregado su videojuego");
+                  this.router.navigate(['/carrito']);
+                })
+                .catch(error => {
+                  console.error(error);
+                });
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
 }

@@ -35,3 +35,19 @@ ion-content {
         }
     }
 }
+
+.imagen-perfil {
+    width: 100px; /* Tamaño personalizado */
+    height: 100px; /* Tamaño personalizado */
+    border-radius: 50%; /* Forma circular */
+    object-fit: cover; /* Ajuste de imagen */
+    border: 2px solid #fff; /* Borde blanco opcional */
+  }
+  .perfil-usuario {
+    text-align: center; /* Centra el contenido */
+    margin: auto; /* Centra horizontalmente */
+    width: 90%; /* Establece un ancho máximo para el perfil */
+    max-width: 400px; /* Ajusta el ancho máximo según tus preferencias */
+    background-color: #fff; /* Cambia el color de fondo si es necesario */
+    padding: 30px; /* Espacio interior para separar los elementos */
+  }

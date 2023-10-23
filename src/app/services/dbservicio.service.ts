@@ -38,7 +38,7 @@ export class DbservicioService {
   rol1: string = "INSERT or IGNORE INTO rol(id_rolr, nombrer) VALUES(1, 'Usuario');";
   rol2: string = "INSERT or IGNORE INTO rol(id_rolr, nombrer) VALUES(2, 'Administrador');";
   carrito_generico: string = "INSERT or IGNORE  INTO  carrito (id_carrito, usuario_id) VALUES (1, NULL)";
-  admin: string = "INSERT or IGNORE INTO usuario (emailu,nombre_usuariou,contrasenau,rol_id) VALUES('admin@admin.cl', 'adminfirst','admin123',2)";
+  admin: string = "INSERT or IGNORE INTO usuario (id_usuariou,emailu,nombre_usuariou,contrasenau,rol_id) VALUES(1,'admin@admin.cl', 'adminfirst','admin123',2)";
 
   constructor(private alertController: AlertController, private sqlite: SQLite, private platform: Platform) {
     this.createDatabase();
@@ -310,6 +310,33 @@ export class DbservicioService {
     });
   }
   //funciones carrito
+  crearCarrito(usuarioId: string): Promise<number> {
+    return this.database.executeSql('INSERT INTO carrito (usuario_id) VALUES (?)', [usuarioId])
+      .then(() => {
+        // Después de crear un carrito, obtén su ID
+        return this.obtenerIdCarritoDeUsuario(usuarioId);
+      })
+      .catch(error => {
+        console.error('Error al crear el carrito:', error);
+        throw error;
+      });
+  }
+  
+  obtenerIdCarritoDeUsuario(usuarioId: string | null): Promise<number> {
+    return this.database.executeSql('SELECT id_carrito FROM carrito WHERE usuario_id = ?', [usuarioId])
+      .then((res) => {
+        if (res.rows.length > 0) {
+          return res.rows.item(0).id_carrito;
+        } else {
+          return 1;
+        }
+      })
+      .catch(error => {
+        console.error('Error al obtener el ID del carrito:', error);
+        throw error;
+      });
+  }
+
   agregarAlCarrito(videojuego_id: number, cantidad: number, carrito_id: number): Promise<void> {
     return this.database.executeSql('INSERT INTO itemCarrito (videojuego_id, cantidad, carrito_id) VALUES (?, ?, ?)', [videojuego_id, cantidad, carrito_id])
       .then(() => {
@@ -382,14 +409,32 @@ export class DbservicioService {
   vaciarCarrito(carritoId: number): Promise<void> {
     return this.database.executeSql('DELETE FROM itemCarrito WHERE carrito_id = ?', [carritoId])
       .then(() => {
-        this.actualizarCarrito(1);
+        this.actualizarCarrito(carritoId);
       })
       .catch(error => {
         console.error('Error al vaciar el carrito:', error);
         throw error;
       });
   }
-
+  
+  obtenerItemCarrito(carrito_id: number, videojuego_id: number): Promise<any> {
+    return this.database.executeSql(
+      'SELECT * FROM itemCarrito WHERE carrito_id = ? AND videojuego_id = ?',
+      [carrito_id, videojuego_id]
+    )
+    .then((res) => {
+      if (res.rows.length > 0) {
+        return res.rows.item(0);
+      } else {
+        return null;
+      }
+    })
+    .catch(error => {
+      console.error('Error al obtener el elemento del carrito:', error);
+      throw error;
+    });
+  }
+  
   //funciones del proceso de compra
 
   //crud usuario
@@ -413,24 +458,31 @@ export class DbservicioService {
       return items;
     });
   }
-  buscarUsuarioPorId(id: any): Promise<Usuario[]> {
-    return this.database.executeSql('SELECT * FROM usuario where id_usuariou = ?', [id]).then(res => {
-      let items: Usuario[] = [];
-      if (res.rows.length > 0) {
-        for (var i = 0; i < res.rows.length; i++) {
-          items.push({
-            id_usuariou: res.rows.item(i).id_usuariou,
-            emailu: res.rows.item(i).emailu,
-            nombre_usuariou: res.rows.item(i).nombre_usuariou,
-            contrasenau: res.rows.item(i).contrasenau,
-            nombreu: res.rows.item(i).nombreu,
-            imagenu: res.rows.item(i).imagenu,
-            rol_id: res.rows.item(i).rol_id,
-          })
+
+
+  
+  async buscarUsuarioPorId(id: any): Promise<Usuario[]> {
+    return new Promise<Usuario[]>(async (resolve, reject) => {
+      try {
+        const res = await this.database.executeSql('SELECT * FROM usuario where id_usuariou = ?', [id]);
+        let items: Usuario[] = [];
+        if (res.rows.length > 0) {
+          for (var i = 0; i < res.rows.length; i++) {
+            items.push({
+              id_usuariou: res.rows.item(i).id_usuariou,
+              emailu: res.rows.item(i).emailu,
+              nombre_usuariou: res.rows.item(i).nombre_usuariou,
+              contrasenau: res.rows.item(i).contrasenau,
+              nombreu: res.rows.item(i).nombreu,
+              imagenu: res.rows.item(i).imagenu,
+              rol_id: res.rows.item(i).rol_id,
+            });
+          }
         }
+        resolve(items);
+      } catch (error) {
+        reject(error);
       }
-      this.buscarJuego();
-      return items;
     });
   }
 
@@ -441,16 +493,28 @@ export class DbservicioService {
     })
   }
 
-  actualizarUsuario(id_usuariou: any, emailu: any, nombre_usuariou: any, contrasenau: any, nombreu: any, imagenu: any, rol_id: any){
-    return this.database.executeSql('UPDATE usuario SET id_usuariou = ?, emailu = ?, nombre_usuariou = ?, contrasenau = ?, nombreu = ?, imagenu = ?, rol_id = ?',  [id_usuariou, emailu, nombre_usuariou, contrasenau, nombreu, imagenu, rol_id]).then(res =>{
+
+  actualizarUsuario(id_usuariou: any, emailu: any, nombre_usuariou: any, nombreu: any, imagenu: any){
+    return this.database.executeSql('UPDATE usuario SET emailu = ?, nombre_usuariou = ?, nombreu = ?, imagenu = ? where id_usuariou = ?', [emailu, nombre_usuariou, nombreu, imagenu, id_usuariou]).then(res => {
+      console.log('Actualización exitosa');
+      this.buscarUsuario();
+    }).catch(error => {
+      console.error('Error al actualizar el usuario:', error);
+    });
+  }
+  actualizarcontrasena(id_usuariou: any, contrasena: any){
+    return this.database.executeSql('UPDATE usuario SET contrasenau = ?  where  id_usuariou = ?',  [contrasena,id_usuariou]).then(res =>{
       this.buscarUsuario();
     })
   }
 
   borrarUsuario(id_usuariou: any){
-    return this.database.executeSql('DELETE FROM usuario WHERE id = ?', [id_usuariou])
+    return this.database.executeSql('DELETE FROM usuario WHERE id_usuariou = ?', [id_usuariou])
     .then(a =>{
       this.buscarUsuario();
+    })
+    .catch(e => {
+      this.presentAlert("Error al eliminar  Usuario" + e)
     })
   }
 

@@ -40,7 +40,7 @@
 </ion-content>
 
 <ion-footer class="centrado">
-  <h3>Total: {{ totalCarrito | currency }}</h3>
+  <h3><span  class="neon-rgb">Total: {{ totalCarrito | precioClp }}</span></h3>
   <ion-button (click)="vaciarCarrito()">Vaciar Carrito</ion-button>
   <ion-button [routerLink]="['/datos-pago']" expand="full">Pagar</ion-button>
 </ion-footer>

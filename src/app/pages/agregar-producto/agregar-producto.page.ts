@@ -2,8 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DbservicioService } from 'src/app/services/dbservicio.service';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { AlertController } from '@ionic/angular'; // Importa AlertController
-import { ValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms'; // Importa ValidatorFn, FormGroup y Validators
+import { ValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-agregar-producto',
@@ -25,7 +24,6 @@ export class AgregarProductoPage implements OnInit {
   constructor(
     private bd: DbservicioService,
     public router: Router,
-    private alertController: AlertController, // Agrega AlertController
     private formBuilder: FormBuilder // Agrega formBuilder
   ) {
    
@@ -93,15 +91,7 @@ export class AgregarProductoPage implements OnInit {
     this.router.navigate(['/lista-videojuegos']);
   }
 
-  async presentAlert(titulo: string, mensaje: string) {
-    const alert = await this.alertController.create({
-      header: titulo,
-      message: mensaje,
-      buttons: ['Aceptar'],
-    });
 
-    await alert.present();
-  }
 
   private generateSlug(text: string): string {
     return text

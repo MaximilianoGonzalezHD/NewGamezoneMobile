@@ -9,22 +9,41 @@ import { DbservicioService } from 'src/app/services/dbservicio.service';
 })
 export class PerfilPage implements OnInit {
   userId: string | null;
-  usuario_list: any;
+  usuario_list = [
+    {
+      id_usuariou: '',
+      emailu: '',
+      nombre_usuariou: '',
+      contrasenau: '',
+      nombreu: '',
+      imagenu: '',
+      rol_id: '',
+    }
+
+  ]
   constructor(private bd: DbservicioService, private router: Router) {
     this.userId = localStorage.getItem('userId');
   }
   ngOnInit() {
     this.bd.dbState().subscribe(res => {
       if (res) {
-        this.bd.buscarUsuarioPorId(this.userId)
-          .then(item => {
-            this.usuario_list = item;
-            console.log('Datos del usuario:', this.usuario_list);
-          })
-          .catch(error => {
-            console.error('Error al buscar el usuario:', error);
-          });
+
+          this.bd.buscarUsuarioPorId(this.userId)
+            .then(item => {
+              this.usuario_list = item;
+              console.log('Datos del usuario:', this.usuario_list);
+            })
+            .catch(error => {
+              console.error('Error al buscar el usuario:', error);
+            });
       }
-    });
+    }
+    )
+  };
+  ircambiarcontrasena(){
+    this.router.navigate(['/cambiar-contrasena'])
+  }
+  irmodperfil(){
+    this.router.navigate(['/mod-perfil'])
   }
 }

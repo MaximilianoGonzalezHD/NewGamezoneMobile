@@ -29,8 +29,10 @@ export class AppComponent {
   logout() {
     localStorage.setItem('userRole', 'null');
     localStorage.removeItem('userId');
-    window.location.reload();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
+    this.bd.presentAlert('Se ha cerrado sesión');
+  
+    
   }
 
 }
