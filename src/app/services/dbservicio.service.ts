@@ -454,9 +454,25 @@ export class DbservicioService {
   }
 
   //funciones del proceso de compra
-crearCompra(usuarioId: string, total: number | null): Promise<number> {
+crearCompra(rutc: string, usuarioId: string | number, total: number | null): Promise<number> {
   const fechaCompra = new Date(); 
-  const rutc = 'Número RUTC'; 
+
+
+  return this.database.executeSql(
+    'INSERT INTO compra (fechac, rutc, totalc, usuario_id) VALUES (?, ?, ?, ?)',
+    [fechaCompra, rutc, total, usuarioId]
+  )
+    .then(() => {
+      return this.obtenerIdCompra(usuarioId, fechaCompra);
+    })
+    .catch(error => {
+      console.error('Error al crear la compra:', error);
+      throw error;
+    });
+}
+crearCompraGenerica(rutc: string, usuarioId: string | null, total: number | null): Promise<number> {
+  const fechaCompra = new Date(); 
+
 
   return this.database.executeSql(
     'INSERT INTO compra (fechac, rutc, totalc, usuario_id) VALUES (?, ?, ?, ?)',
@@ -471,7 +487,7 @@ crearCompra(usuarioId: string, total: number | null): Promise<number> {
     });
 }
 
-obtenerIdCompra(usuarioId: string, fechaCompra: Date): Promise<number> {
+obtenerIdCompra(usuarioId: string | null | number, fechaCompra: Date): Promise<number> {
   return this.database.executeSql(
     'SELECT id_comprac FROM compra WHERE usuario_id = ? AND fechac = ?',
     [usuarioId, fechaCompra]
@@ -489,7 +505,7 @@ obtenerIdCompra(usuarioId: string, fechaCompra: Date): Promise<number> {
     });
 }
 async procesarCompraNoRegistrado(rut: string, correo: string) {
-  const compraId = await this.crearCompra(rut, null);
+  const compraId = await this.crearCompraGenerica(rut,null, null);
   const carritoId = 1;
   const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId); 
 
@@ -505,15 +521,13 @@ async procesarCompraNoRegistrado(rut: string, correo: string) {
 }
 
 async procesarCompraRegistrado(rut: string, usuarioId: number) {
-  const compraId = await this.crearCompra(rut, usuarioId);
+  const compraId = await this.crearCompra(rut, usuarioId, null);
   const carritoId = await this.obtenerIdCarritoDeUsuario(usuarioId);
   const elementosCarrito = await this.obtenerItemsDelCarrito(carritoId);
 
   for (const elemento of elementosCarrito) {
     await this.agregarDetalleCompra(compraId, elemento.videojuego_id, elemento.cantidad, elemento.precio);
   }
-
-  await this.vaciarCarrito(carritoId);
 
   this.router.navigate(['/paga-confirmado']); 
 }
@@ -744,13 +758,13 @@ agregarDetalleCompra(compraId: number, videojuegoId: number, cantidad: number, s
       const transporter = nodemailer.createTransport({
         service: 'Gmail', 
         auth: {
-          user: 'tu_correo@gmail.com', 
-          pass: 'tu_contraseña', 
+          user: 'game.zone.pageshop@gmail.com', 
+          pass: 'jxcsjtcrazyazkmi', 
         },
       });
 
       const mensaje = {
-        from: 'tu_correo@gmail.com', 
+        from: 'game.zone.pageshop@gmail.com', 
         to: correo, 
         subject: 'Detalles de tu compra', 
         html: `
@@ -763,7 +777,7 @@ agregarDetalleCompra(compraId: number, videojuegoId: number, cantidad: number, s
         `,
       };
 
-      // Envía el correo electrónico
+  
       await transporter.sendMail(mensaje);
 
       console.log('Correo electrónico enviado con éxito.');
