@@ -22,6 +22,7 @@
         <ion-item>
           <ion-label position="floating">Rut:</ion-label>
           <ion-input placeholder="Ingrese su Rut..." [(ngModel)]="rut"></ion-input>
+          <br>
           <ion-label style="color:grey;">Ejemplo: xx.xxx.xxx</ion-label>
         </ion-item>
         <ion-item *ngIf="hasUserRole('null')">
