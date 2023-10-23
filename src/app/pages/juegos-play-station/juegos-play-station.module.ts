@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { JuegosPlayStationPageRoutingModule } from './juegos-play-station-routing.module';
 
 import { JuegosPlayStationPage } from './juegos-play-station.page';
-import { SharedModule } from 'src/app/shared.module';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   imports: [

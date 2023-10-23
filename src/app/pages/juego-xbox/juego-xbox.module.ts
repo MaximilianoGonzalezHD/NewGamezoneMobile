@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { JuegoXboxPageRoutingModule } from './juego-xbox-routing.module';
 
 import { JuegoXboxPage } from './juego-xbox.page';
-import { SharedModule } from 'src/app/shared.module';
+import { SharedModule } from '../../shared.module';
 @NgModule({
   imports: [
     CommonModule,

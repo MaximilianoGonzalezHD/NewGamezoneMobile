@@ -28,7 +28,7 @@
           <ion-input placeholder="Ingrese su Correo..." [(ngModel)]="correo"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label class="centrado">Total: </ion-label>
+          <ion-label class="centrado">Total: {{ totalCarrito | precioClp }} </ion-label>
         </ion-item>
         <ion-button (click)="comprar()">Confirmar</ion-button>
       </ion-card-content>

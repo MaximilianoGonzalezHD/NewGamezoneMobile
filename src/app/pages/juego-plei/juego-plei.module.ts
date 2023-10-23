@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { JuegoPleiPageRoutingModule } from './juego-plei-routing.module';
 
 import { JuegoPleiPage } from './juego-plei.page';
-import { SharedModule } from 'src/app/shared.module';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   imports: [

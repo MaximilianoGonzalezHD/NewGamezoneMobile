@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
-
+import { SharedModule } from '../../shared.module';
 import { ListaVideojuegosPageRoutingModule } from './lista-videojuegos-routing.module';
 import { ListaVideojuegosPage } from './lista-videojuegos.page';
 
@@ -12,7 +12,8 @@ import { ListaVideojuegosPage } from './lista-videojuegos.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    ListaVideojuegosPageRoutingModule
+    ListaVideojuegosPageRoutingModule,
+    SharedModule
   ],
   declarations: [ListaVideojuegosPage]
 })

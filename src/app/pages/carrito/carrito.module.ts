@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { CarritoPageRoutingModule } from './carrito-routing.module';
 
 import { CarritoPage } from './carrito.page';
-import { SharedModule } from 'src/app/shared.module';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   imports: [

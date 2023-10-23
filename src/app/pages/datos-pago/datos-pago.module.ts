@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { IonicModule } from '@ionic/angular';
 
 import { DatosPagoPageRoutingModule } from './datos-pago-routing.module';
-
+import { SharedModule } from '../../shared.module';
 import { DatosPagoPage } from './datos-pago.page';
 
 @NgModule({
@@ -13,7 +13,8 @@ import { DatosPagoPage } from './datos-pago.page';
     CommonModule,
     FormsModule,
     IonicModule,
-    DatosPagoPageRoutingModule
+    DatosPagoPageRoutingModule,
+    SharedModule
   ],
   declarations: [DatosPagoPage]
 })

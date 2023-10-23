@@ -44,7 +44,7 @@ export class DbservicioService {
 
   constructor(private router: Router, private alertController: AlertController, private sqlite: SQLite, private platform: Platform) {
     this.emailjs = emailjs;
-    this.emailjs.init("service_yjq8wum");
+    this.emailjs.init("35AGzLRK8lgp9AWOM");
     this.createDatabase();
   }
 

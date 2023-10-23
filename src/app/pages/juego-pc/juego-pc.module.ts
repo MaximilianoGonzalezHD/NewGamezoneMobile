@@ -7,7 +7,7 @@ import { IonicModule } from '@ionic/angular';
 import { JuegoPcPageRoutingModule } from './juego-pc-routing.module';
 
 import { JuegoPcPage } from './juego-pc.page';
-import { SharedModule } from 'src/app/shared.module';
+import { SharedModule } from '../../shared.module';
 
 @NgModule({
   imports: [
