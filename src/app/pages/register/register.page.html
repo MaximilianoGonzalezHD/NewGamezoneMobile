@@ -20,19 +20,19 @@
           <ion-input type="email" placeholder="Ingrese Correo..." [(ngModel)]="correou" formControlName="correo"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating" [counter]="true" minlength="5" maxlength="20" >Usuario</ion-label>
-          <ion-input [counter]="true" minlength="5" maxlength="20" [counterFormatter]="customCounterFormatter" helperText="Ingrese un nombre valido"  errorText="Nombre invalido" placeholder="Ingrese nombre..." [(ngModel)]="nombreu" formControlName="nombre"></ion-input>
+          <ion-label position="floating">Usuario</ion-label>
+          <ion-input helperText="Ingrese un nombre valido"  errorText="Nombre invalido" placeholder="Ingrese nombre..." [(ngModel)]="nombreu" formControlName="nombre"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating" [counter]="true" minlength="2" maxlength="15">Nombre (Opcional)</ion-label>
-          <ion-input [counter]="true" minlength="2" maxlength="20" [counterFormatter]="customCounterFormatter" helperText="Ingrese un nombre valido"  errorText="Nombre invalido" placeholder="Ingrese Nombre..." [(ngModel)]="nombreuop" formControlName="NombreOpcional"></ion-input>
+          <ion-label position="floating" >Nombre (Opcional)</ion-label>
+          <ion-input helperText="Ingrese un nombre valido"  errorText="Nombre invalido" placeholder="Ingrese Nombre..." [(ngModel)]="nombreuop" formControlName="NombreOpcional"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating" [counter]="true" minlength="5" maxlength="30" pattern="'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$'">Contraseña</ion-label>
-          <ion-input  [counter]="true" minlength="5" maxlength="30" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$" [counterFormatter]="customCounterFormatter" helperText="Ingrese una clave valida"  errorText="Clave invalido"placeholder="Ingrese contraseña..." [(ngModel)]="contrau" formControlName="password" type="password" ></ion-input>
+          <ion-label position="floating" >Contraseña</ion-label>
+          <ion-input helperText="Ingrese una clave valida"  errorText="Clave invalido"placeholder="Ingrese contraseña..." [(ngModel)]="contrau" formControlName="password" type="password" ></ion-input>
         </ion-item>
         <ion-item>
-          <ion-label position="floating" [counter]="true" minlength="5" maxlength="30" pattern="'^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[a-zA-Z0-9]+$'">Confirmar contraseña</ion-label>
+          <ion-label position="floating">Confirmar contraseña</ion-label>
           <ion-input helperText="Reingrese su clave" errorText="Clave invalido" placeholder="Confirmar contraseña..." formControlName="confirmacionPassword" type="password"></ion-input>
         </ion-item>
         <br>
