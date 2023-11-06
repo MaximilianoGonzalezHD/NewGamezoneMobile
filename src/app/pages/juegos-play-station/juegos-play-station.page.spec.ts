@@ -5,11 +5,11 @@ describe('JuegosPlayStationPage', () => {
   let component: JuegosPlayStationPage;
   let fixture: ComponentFixture<JuegosPlayStationPage>;
 
-  beforeEach(async(() => {
+  beforeEach(async() => {
     fixture = TestBed.createComponent(JuegosPlayStationPage);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
   it('should create', () => {
     expect(component).toBeTruthy();
