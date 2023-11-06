@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModProductoPage } from './mod-producto.page';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ModProductoPage', () => {
   let component: ModProductoPage;
@@ -8,7 +9,7 @@ describe('ModProductoPage', () => {
 
   beforeEach(async() => {
     TestBed.configureTestingModule({
-      providers: [SQLite]
+      providers: [SQLite,ActivatedRoute]
     }).compileComponents();
     fixture = TestBed.createComponent(ModProductoPage);
     component = fixture.componentInstance;
