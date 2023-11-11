@@ -44,9 +44,11 @@ export class DbservicioService {
 
   constructor(private router: Router, private alertController: AlertController, private sqlite: SQLite, private platform: Platform) {
     this.emailjs = emailjs;
-    this.emailjs.init("35AGzLRK8lgp9AWOM");
+    this.emailjs.init("jdbt heyo bfdj dkmf");
     this.createDatabase();
   }
+ 
+
 
   dbState() {
     return this.isDBReady.asObservable();
@@ -472,11 +474,23 @@ export class DbservicioService {
   //funciones del proceso de compra
 crearCompra(rutc: string, usuarioId: string | number | null, total: number ): Promise<number> {
   const fechaCompra = new Date(); 
+  const opcionesFormato: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric', 
+    second: 'numeric', 
+    hour12: false 
+  };
+  
+  const formatoFecha = new Intl.DateTimeFormat('es-CL', opcionesFormato);
+  const fechaFormateada = formatoFecha.format(fechaCompra);
 
 
   return this.database.executeSql(
     'INSERT INTO compra (fechac, rutc, totalc, usuario_id) VALUES (?, ?, ?, ?)',
-    [fechaCompra, rutc, total, usuarioId]
+    [fechaFormateada, rutc, total, usuarioId]
   )
     .then(() => {
       return this.obtenerIdCompra(usuarioId);
@@ -488,9 +502,22 @@ crearCompra(rutc: string, usuarioId: string | number | null, total: number ): Pr
 }
 async crearCompraGenerica(rut: string, total: any): Promise<number> {
   const fechaCompra = new Date();
+ 
+  const opcionesFormato: Intl.DateTimeFormatOptions = { 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric', 
+    hour: 'numeric', 
+    minute: 'numeric', 
+    second: 'numeric', 
+    hour12: false 
+  };
+  
+  const formatoFecha = new Intl.DateTimeFormat('es-CL', opcionesFormato);
+  const fechaFormateada = formatoFecha.format(fechaCompra);
 
   return this.database
-    .executeSql('INSERT INTO compra (fechac, rutc, totalc) VALUES (?, ?, ?)', [fechaCompra, rut ,total])
+    .executeSql('INSERT INTO compra (fechac, rutc, totalc) VALUES (?, ?, ?)', [fechaFormateada, rut ,total])
     .then(() => {
       return this.obtenerIdCompra(rut);
     })

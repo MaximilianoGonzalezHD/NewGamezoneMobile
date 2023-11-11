@@ -8,17 +8,17 @@ import { CarritoItem } from '../../interfaces/carrito-item';
   styleUrls: ['./datos-pago.page.scss'],
 })
 export class DatosPagoPage implements OnInit {
-  correo: string = ''; 
-  rut: string = '';   
+  correo: string = '';
+  rut: string = '';
   carritoId: number;
-  userId: string | null | number; 
+  userId: string | null | number;
   totalCarrito: number = 0;
   carrito: CarritoItem[] = [];
-  
+
   constructor(private bd: DbservicioService) {
     this.userId = localStorage.getItem('userId');
     this.carritoId = 1;
-  } 
+  }
   ngOnInit() {
     if (this.userId) {
       this.bd.obtenerIdCarritoDeUsuario(this.userId)
@@ -30,7 +30,7 @@ export class DatosPagoPage implements OnInit {
           console.error('Error al obtener el carrito de usuario:', error);
         });
     }
-  
+
     this.bd.obtenerCarrito().subscribe((carrito) => {
       this.carrito = carrito;
       this.actualizarTotalCarrito();
@@ -43,43 +43,40 @@ export class DatosPagoPage implements OnInit {
         return;
       }
       if (!this.validarCorreo(this.correo)) {
-        this.bd.presentAlert('Rut Correo Invalido!')
+        this.bd.presentAlert('Correo Invalido!')
         return;
       }
     }
     this.bd.procesarCompraNoRegistrado(this.rut, this.correo, this.totalCarrito);
   }
-  
+
   comprarconusuario() {
-    if (!this.validarRut(this.rut)) {
-      this.bd.presentAlert('Rut Invalido!')
-      return;
-    }
     this.bd.procesarCompraRegistrado(this.rut, this.userId, this.totalCarrito);
   }
-actualizarTotalCarrito() {
-  this.totalCarrito = this.carrito.reduce((total, item) => {
-    total += item.cantidad * item.precio;
-    return total;
-  }, 0);
-}
-async actualizarCarrito() {
-  await this.bd.actualizarCarrito(this.carritoId);
-}
-validarRut(rut: string): boolean {
-  const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}-\d{1,2}$/;
-  return rutRegex.test(rut);
-}
-validarCorreo(correo: string): boolean {
-  return correo.includes('.') && correo.includes('@');
+
+  actualizarTotalCarrito() {
+    this.totalCarrito = this.carrito.reduce((total, item) => {
+      total += item.cantidad * item.precio;
+      return total;
+    }, 0);
+  }
+  async actualizarCarrito() {
+    await this.bd.actualizarCarrito(this.carritoId);
+  }
+  validarRut(rut: string): boolean {
+    const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}-\d{1,2}$/;
+    return rutRegex.test(rut);
+  }
+  validarCorreo(correo: string): boolean {
+    return correo.includes('.') && correo.includes('@');
+  }
+
+  hasUserRole(role: string): boolean {
+    const storedRole = localStorage.getItem('userRole');
+    return storedRole === role;
+  }
 }
 
-hasUserRole(role: string): boolean {
-  const storedRole = localStorage.getItem('userRole');
-  return storedRole === role;
-}
-}
 
-  
 
 

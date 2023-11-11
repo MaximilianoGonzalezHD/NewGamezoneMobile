@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DbservicioService } from '../../services/dbservicio.service';
 import { Router } from '@angular/router';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { ValidatorFn, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-agregar-producto',
@@ -19,20 +19,15 @@ export class AgregarProductoPage implements OnInit {
   slug = "";
 
 
-  form: FormGroup;
+
 
   constructor(
     private bd: DbservicioService,
     public router: Router,
-    private formBuilder: FormBuilder // Agrega formBuilder
+ 
   ) {
    
-    this.form = this.formBuilder.group({
-      nombre: ['', Validators.compose([Validators.required])],
-      descripcion: ['', Validators.compose([Validators.required])],
-      precio: ['', Validators.compose([Validators.required])],
-      seccion: ['', Validators.required],
-    });
+ 
   }
 
   ngOnInit() {}
@@ -68,14 +63,24 @@ export class AgregarProductoPage implements OnInit {
       this.bd.presentAlert('El nombre del juego no puede ser solo espacios en blanco.');
       return; 
     }
+ 
     if (this.descripcion.length < 10 || this.descripcion.length > 500) {
       this.bd.presentAlert('La descripción debe tener entre 10 y 500 caracteres.');
       return; 
     }
-    if (!this.form.valid) {
-      this.bd.presentAlert('Error en el formulario: Debe ingresar todos los datos');
+    if (!this.nombre) {
+      this.bd.presentAlert('¿El juego no tiene nombre?');
+      return; 
     }
- 
+    if (!this.precio) {
+      this.bd.presentAlert('Falta el precio');
+      return; 
+    }
+    if (!this.descripcion) {
+      this.bd.presentAlert('Falta La Descripción');
+      return; 
+    }
+
     if (!this.seccion) {
       this.bd.presentAlert('Debes seleccionar una sección.');
       return; 
@@ -84,6 +89,7 @@ export class AgregarProductoPage implements OnInit {
       this.bd.presentAlert('Debes seleccionar una imagen.');
       return; 
     }
+
 
     this.slug = this.generateSlug(this.nombre);
     this.bd.insertarJuego(this.nombre, this.descripcion, this.precio, this.imagen, this.seccion, this.slug);

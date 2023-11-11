@@ -51,6 +51,17 @@ export class ModPerfilPage implements OnInit {
 
 
   Modificar() {
+    if(!this.correou){
+      this.correou = this.usuario_list[0].emailu;
+    }
+    if(!this.nombreu){
+      this.nombreu = this.usuario_list[0].nombre_usuariou;
+    }
+    if(!this.nombreuop){
+      this.nombreuop = this.usuario_list[0].nombreu;
+    }
+
+
     this.bd.actualizarUsuario(this.userId, this.correou, this.nombreu, this.nombreuop, this.imagenu);
     console.log('Valores para actualizar:', this.userId, this.correou, this.nombreu, this.nombreuop, this.imagenu);
     this.bd.presentAlert('Se han modificado sus datos!');

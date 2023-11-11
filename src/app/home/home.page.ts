@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { LoadingService } from '../loading.service';
+import { DbservicioService } from '../services/dbservicio.service';
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -7,8 +8,14 @@ import { LoadingService } from '../loading.service';
 })
 export class HomePage {
 
-  constructor(private loadingService: LoadingService) {}
+
+  constructor(private bd: DbservicioService,private loadingService: LoadingService) {
+
+  }
   ngOnInit() {
+
+    this.bd.setItem('userId', "null");
+    this.bd.setItem('userRole', "null");
     // Al iniciar la página, mostrar la animación de carga
     this.loadingService.showLoading();
 
